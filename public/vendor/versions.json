@@ -1,0 +1,12 @@
+{
+  "marked": {
+    "version": "18.1.3",
+    "source": "https://registry.npmjs.org/marked",
+    "sha256": "c34a221dc89e91833a88822e7717b8a0cf27118f8c9a8779dffb48a6be31f97a"
+  },
+  "dompurify": {
+    "version": "3.4.17",
+    "source": "https://registry.npmjs.org/dompurify",
+    "sha256": "cd37898f9782adf54820c413191b5691803f0f137c799d6edcfd38523b4c2c31"
+  }
+}

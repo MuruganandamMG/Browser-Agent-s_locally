@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local model chat</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/agent-monitor.css">
+  <script src="/vendor/marked.js" defer></script>
+  <script src="/vendor/dompurify.js" defer></script>
+  <script src="/voice.js" defer></script>
+  <script src="/agent-monitor.js" defer></script>
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <aside id="sidebar" aria-label="Saved conversations">
+    <div class="sidebar-top"><a href="/" class="wordmark">Local chat</a><button id="close-sidebar" class="icon-button" aria-label="Close conversations" title="Close sidebar"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16"/></svg></button></div>
+    <button id="new-session" class="nav-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-7M16 3l5 5M10 14l2-6 7-7 5 5-7 7z"/></svg>New chat</button>
+    <label class="search-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><input id="search-chats" type="search" placeholder="Search chats" aria-label="Search saved chats"></label>
+    <button id="delete-session" class="nav-button" type="button" disabled>Delete current chat</button>
+    <div class="section-label">Your chats</div>
+    <nav id="sessions" aria-label="Conversation history"></nav><p id="no-results" hidden>No matching conversations</p>
+    <div class="sidebar-bottom"><details id="memory-panel"><summary>Memory across chats</summary><label for="memory">Preferences and context to remember</label><textarea id="memory" rows="5" maxlength="8000" placeholder="For example: I prefer concise answers and TypeScript."></textarea><button id="save-memory" type="button">Save memory</button><small id="memory-status" role="status"></small></details><a href="/api/export" download="local-chat-backup.json">Export all conversations &nearr;</a><small>Saved on this computer &middot; Automatic backup</small></div>
+  </aside>
+  <main>
+    <header><button id="open-sidebar" class="icon-button" type="button" aria-label="Open conversations" aria-expanded="true" title="Toggle sidebar"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16"/></svg></button><details id="model-menu"><summary>Local chat <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></summary><div class="model-picker"><label for="model-select">Choose your local model</label><select id="model-select" aria-describedby="model-status"><option>Loading models...</option></select><button id="load-model" type="button" disabled>Load model</button><small id="model-status" role="status">One model runs at a time.</small><span id="model-name">Local model</span></div></details><h1 id="chat-title">New conversation</h1><button id="reset" class="icon-button" type="button" aria-label="New chat" title="New chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-7M16 3l5 5M10 14l2-6 7-7 5 5-7 7z"/></svg></button></header>
+    <section id="conversation" role="log" aria-label="Conversation" aria-live="polite" tabindex="0">
+      <div id="empty"><h2>What can I help with?</h2><p>Ask anything, explore an idea, or pick up a saved chat.</p><div class="suggestions"><button type="button" data-prompt="Research a topic using the browser and cite your sources.">Research a topic</button><button type="button" data-prompt="Help me write and improve the following text:">Help me write</button><button type="button" data-prompt="Explain this concept step by step:">Explain something</button></div></div>
+      <section id="agent-monitor" aria-label="Agent task" hidden></section>
+    </section>
+    <div class="composer-area"><p id="status" role="status"></p><form id="composer"><label for="prompt" class="sr-only">Message the model</label><textarea id="prompt" rows="1" maxlength="20000" placeholder="Ask anything" required></textarea><div class="compose-footer"><div class="composer-tools"><button id="browser-mode" type="button" aria-pressed="false" title="Run typed requests as browser tasks. Voice chat stays in chat mode.">Browser: Off</button><button id="computer-mode" type="button" aria-pressed="false" title="Run desktop, browser and coding tasks automatically and receive the final report in chat.">Computer: Off</button><button id="thinking" type="button" aria-pressed="false" title="Enable or disable reasoning for the next message">Thinking: Off</button><details id="tools-info"><summary>Tools</summary><div><strong>Available tools</strong><p>Turn on Browser mode to run a typed request automatically in BrowserOS neo. Computer mode adds Windows apps, an agent cursor and project coding tools. Tasks run automatically and put the final report in this chat. You can stop a running task from the monitor. Ordinary chat has a calculator and a clock.</p><small>Agent tasks stay saved in this chat. Voice chat sends ordinary chat messages.</small></div></details></div><button id="send" type="submit" aria-label="Send message" title="Send message"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"/></svg></button></div></form><footer><span id="model-context" role="status">Checking model context...</span><span id="connection" role="status">Checking connection...</span><span>Local AI can make mistakes. Check important information.</span></footer></div>
+    <section id="voice-controls" aria-label="Voice controls">
+      <div class="voice-buttons"><button id="dictate" type="button" aria-pressed="false">STT · Dictate</button><button id="voice-chat" type="button" aria-pressed="false">TTS + STT · Voice chat</button></div>
+      <label for="voice-language">Speech language</label><input id="voice-language" value="en-IN" maxlength="35" aria-describedby="voice-help" placeholder="en-IN">
+      <small id="voice-status" role="status">Voice off</small>
+      <small id="voice-help">Dictate to review before sending. Voice chat sends automatically and reads replies aloud. Browser speech may use an online service.</small>
+    </section>
+  </main>
+  <dialog id="voice-dialog" aria-labelledby="voice-heading">
+    <div class="voice-screen">
+      <div class="voice-screen-header"><h2 id="voice-heading">Voice conversation</h2><button id="voice-close" type="button" aria-label="End voice conversation">✕</button></div>
+      <div id="voice-orb" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+      <h3 id="voice-phase" role="status">Listening…</h3>
+      <p id="voice-caption">Go ahead, I’m listening.</p>
+      <p id="voice-response"></p>
+      <div class="voice-screen-actions"><button id="voice-mute" type="button" aria-pressed="false">Mute microphone</button><button id="voice-interrupt" type="button" hidden>Interrupt reply</button><button id="voice-end" type="button">End conversation</button></div>
+      <small>Your words and replies are saved in this chat. Browser speech may use an online service.</small>
+    </div>
+  </dialog>
+</body>
+</html>
